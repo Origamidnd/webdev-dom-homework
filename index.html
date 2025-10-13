@@ -48,16 +48,18 @@
         <input
           type="text"
           class="add-form-name"
+          id="name"
           placeholder="Введите ваше имя"
         />
         <textarea
           type="textarea"
           class="add-form-text"
+          id="comment"
           placeholder="Введите ваш коментарий"
           rows="4"
         ></textarea>
         <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
+          <button class="add-form-button" id="button">Написать</button>
         </div>
       </div>
     </div>
@@ -66,6 +68,45 @@
   <script>
     "use strict";
     // Код писать здесь
+    const addName = document.getElementById("name");
+    const addComment = document.getElementById("comment");
+    const buttonAdd = document.getElementById("button");
+    const commentsList = document.querySelector(".comments");
+    const currentTime = new Date().toLocaleString();
+
+    addName.addEventListener("input", () => {});
+    addComment.addEventListener("input", () => {});
+    buttonAdd.addEventListener("click", () => {
+      const currentTime = new Date().toLocaleString();
+      const nameValue = addName.value;
+      const commentValue = addComment.value;
+      if (nameValue === "" || commentValue === "") {
+        return;
+      }
+
+      const newComment = `<li class="comment">
+  <div class="comment-header">
+    <div>${nameValue}</div>
+    <div>${currentTime}</div>
+  </div>
+  <div class="comment-body">
+    <div class="comment-text">
+      ${commentValue}
+    </div>
+  </div>
+  <div class="comment-footer">
+    <div class="likes">
+      <span class="likes-counter">0</span>
+      <button class="like-button"></button>
+    </div>
+  </div>
+</li>
+      `;
+      commentsList.innerHTML += newComment;
+      addName.value = "";
+      addComment.value = "";
+    });
+
     console.log("It works!");
   </script>
 </html>
