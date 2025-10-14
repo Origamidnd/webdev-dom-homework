@@ -72,15 +72,20 @@
     const addComment = document.getElementById("comment");
     const buttonAdd = document.getElementById("button");
     const commentsList = document.querySelector(".comments");
-    const currentTime = new Date().toLocaleString();
 
-    addName.addEventListener("input", () => {});
-    addComment.addEventListener("input", () => {});
     buttonAdd.addEventListener("click", () => {
-      const currentTime = new Date().toLocaleString();
+      const now = new Date();
+      const currentTime = now.toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
       const nameValue = addName.value;
       const commentValue = addComment.value;
       if (nameValue === "" || commentValue === "") {
+        alert("Напиши что нибудь!");
         return;
       }
 
