@@ -75,13 +75,18 @@
 
     buttonAdd.addEventListener("click", () => {
       const now = new Date();
-      const currentTime = now.toLocaleString("ru-RU", {
+      const dateStr = now.toLocaleDateString("ru-RU", {
         day: "2-digit",
         month: "2-digit",
         year: "2-digit",
+      });
+      const timeStr = now.toLocaleTimeString("ru-RU", {
         hour: "2-digit",
         minute: "2-digit",
+        hour12: false,
       });
+
+      const currentTime = `${dateStr} ${timeStr}`;
       const nameValue = addName.value;
       const commentValue = addComment.value;
       if (nameValue === "" || commentValue === "") {
