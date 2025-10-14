@@ -8,42 +8,7 @@
 
   <body>
     <div class="container">
-      <ul class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
+      <ul class="comments"></ul>
       <div class="add-form">
         <input
           type="text"
@@ -73,6 +38,52 @@
     const buttonAdd = document.getElementById("button");
     const commentsList = document.querySelector(".comments");
 
+    const comments = [
+      {
+        name: "Глеб Фокин",
+        text: "Это будет мой первый комментарий",
+        date: "12.02.2024 12:18",
+        likes: 3,
+        isLiked: false,
+      },
+      {
+        name: "Кто-то еще",
+        text: "Мне нравится внешний вид страницы",
+        date: "13.02.2024 19:22",
+        likes: 75,
+        isLiked: true,
+      },
+    ];
+
+    const renderComments = () => {
+      const items = comments.map(
+        (item, index) => `
+      <li class="comment">
+        <div class="comment-header">
+          <div>${item.name}</div>
+          <div>${item.date}</div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">${item.text}</div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">${item.likes}</span>
+            <button
+              class="like-button${item.isLiked ? " -active-like" : ""}"
+              data-index="${index}">
+            </button>
+          </div>
+        </div>
+      </li>
+    `
+      );
+      const html = items.join("");
+      commentsList.innerHTML = html;
+    };
+
+    renderComments();
+
     buttonAdd.addEventListener("click", () => {
       const now = new Date();
       const dateStr = now.toLocaleDateString("ru-RU", {
@@ -94,27 +105,33 @@
         return;
       }
 
-      const newComment = `<li class="comment">
-  <div class="comment-header">
-    <div>${nameValue}</div>
-    <div>${currentTime}</div>
-  </div>
-  <div class="comment-body">
-    <div class="comment-text">
-      ${commentValue}
-    </div>
-  </div>
-  <div class="comment-footer">
-    <div class="likes">
-      <span class="likes-counter">0</span>
-      <button class="like-button"></button>
-    </div>
-  </div>
-</li>
-      `;
-      commentsList.innerHTML += newComment;
+      comments.push({
+        name: nameValue,
+        text: commentValue,
+        date: currentTime,
+        likes: 0,
+        isLiked: false,
+      });
+
+      renderComments();
       addName.value = "";
       addComment.value = "";
+    });
+
+    commentsList.addEventListener("click", (e) => {
+      const likeBtn = e.target.closest(".like-button");
+      if (!likeBtn) return;
+      const i = Number(likeBtn.dataset.index);
+      if (Number.isNaN(i)) return;
+
+      if (!comments[i].isLiked) {
+        comments[i].isLiked = true;
+        comments[i].likes += 1;
+      } else {
+        comments[i].isLiked = false;
+        comments[i].likes -= 1;
+      }
+      renderComments();
     });
 
     console.log("It works!");
