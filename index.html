@@ -98,8 +98,16 @@
       });
 
       const currentTime = `${dateStr} ${timeStr}`;
-      const nameValue = addName.value;
-      const commentValue = addComment.value;
+      const nameValue = addName.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .trim();
+      const commentValue = addComment.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .trim();
       if (nameValue === "" || commentValue === "") {
         alert("Напиши что нибудь!");
         return;
@@ -132,6 +140,26 @@
         comments[i].likes -= 1;
       }
       renderComments();
+    });
+
+    commentsList.addEventListener("click", (e) => {
+      const item = e.target.closest(".comment");
+      if (!item || !commentsList.contains(item)) return;
+
+      const author =
+        item
+          .querySelector(".comment-header > div:first-child")
+          ?.textContent.trim() ?? "";
+      const text =
+        item.querySelector(".comment-text")?.textContent.trim() ?? "";
+
+      const quote = `@${author}: "${text}" `;
+      addComment.value = quote;
+      addComment.focus();
+      addComment.setSelectionRange(
+        addComment.value.length,
+        addComment.value.length
+      );
     });
 
     console.log("It works!");
