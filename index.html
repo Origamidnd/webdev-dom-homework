@@ -1,167 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-
-  <body>
-    <div class="container">
-      <ul class="comments"></ul>
-      <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          id="name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          id="comment"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button" id="button">Написать</button>
+    <head>
+        <meta charset="utf-8" />
+        <title>Проект "Комменты"</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <ul class="comments"></ul>
+            <div class="add-form">
+                <input
+                    type="text"
+                    class="add-form-name"
+                    id="name"
+                    placeholder="Введите ваше имя"
+                />
+                <textarea
+                    class="add-form-text"
+                    id="comment"
+                    placeholder="Введите ваш комментарий"
+                    rows="4"
+                ></textarea>
+                <div class="add-form-row">
+                    <button class="add-form-button" id="button">
+                        Написать
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </body>
 
-  <script>
-    "use strict";
-    // Код писать здесь
-    const addName = document.getElementById("name");
-    const addComment = document.getElementById("comment");
-    const buttonAdd = document.getElementById("button");
-    const commentsList = document.querySelector(".comments");
-
-    const comments = [
-      {
-        name: "Глеб Фокин",
-        text: "Это будет мой первый комментарий",
-        date: "12.02.2024 12:18",
-        likes: 3,
-        isLiked: false,
-      },
-      {
-        name: "Кто-то еще",
-        text: "Мне нравится внешний вид страницы",
-        date: "13.02.2024 19:22",
-        likes: 75,
-        isLiked: true,
-      },
-    ];
-
-    const renderComments = () => {
-      const items = comments.map(
-        (item, index) => `
-      <li class="comment">
-        <div class="comment-header">
-          <div>${item.name}</div>
-          <div>${item.date}</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">${item.text}</div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${item.likes}</span>
-            <button
-              class="like-button${item.isLiked ? " -active-like" : ""}"
-              data-index="${index}">
-            </button>
-          </div>
-        </div>
-      </li>
-    `
-      );
-      const html = items.join("");
-      commentsList.innerHTML = html;
-    };
-
-    renderComments();
-
-    buttonAdd.addEventListener("click", () => {
-      const now = new Date();
-      const dateStr = now.toLocaleDateString("ru-RU", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "2-digit",
-      });
-      const timeStr = now.toLocaleTimeString("ru-RU", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-
-      const currentTime = `${dateStr} ${timeStr}`;
-      const nameValue = addName.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .trim();
-      const commentValue = addComment.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .trim();
-      if (nameValue === "" || commentValue === "") {
-        alert("Напиши что нибудь!");
-        return;
-      }
-
-      comments.push({
-        name: nameValue,
-        text: commentValue,
-        date: currentTime,
-        likes: 0,
-        isLiked: false,
-      });
-
-      renderComments();
-      addName.value = "";
-      addComment.value = "";
-    });
-
-    commentsList.addEventListener("click", (e) => {
-      const likeBtn = e.target.closest(".like-button");
-      if (!likeBtn) return;
-      const i = Number(likeBtn.dataset.index);
-      if (Number.isNaN(i)) return;
-
-      if (!comments[i].isLiked) {
-        comments[i].isLiked = true;
-        comments[i].likes += 1;
-      } else {
-        comments[i].isLiked = false;
-        comments[i].likes -= 1;
-      }
-      renderComments();
-    });
-
-    commentsList.addEventListener("click", (e) => {
-      const item = e.target.closest(".comment");
-      if (!item || !commentsList.contains(item)) return;
-
-      const author =
-        item
-          .querySelector(".comment-header > div:first-child")
-          ?.textContent.trim() ?? "";
-      const text =
-        item.querySelector(".comment-text")?.textContent.trim() ?? "";
-
-      const quote = `@${author}: "${text}" `;
-      addComment.value = quote;
-      addComment.focus();
-      addComment.setSelectionRange(
-        addComment.value.length,
-        addComment.value.length
-      );
-    });
-
-    console.log("It works!");
-  </script>
+        <script type="module" src="./JS modules/main.js"></script>
+    </body>
 </html>
