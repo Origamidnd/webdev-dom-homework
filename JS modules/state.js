@@ -1,24 +1,31 @@
-const comments = [
-    {
-        name: 'Глеб Фокин',
-        text: 'Это будет мой первый комментарий',
-        date: '12.02.2024 12:18',
-        likes: 3,
-        isLiked: false,
-    },
-    {
-        name: 'Кто-то еще',
-        text: 'Мне нравится внешний вид страницы',
-        date: '13.02.2024 19:22',
-        likes: 75,
-        isLiked: true,
-    },
-];
+const API_URL = 'https://wedev-api.sky.pro/api/v1/origami/comments';
+
+let comments = [];
 
 export const getComments = () => comments.slice();
 
-export const addComment = ({ name, text, date }) => {
-    comments.push({ name, text, date, likes: 0, isLiked: false });
+export const loadComments = async () => {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    comments = data.comments.map(c => ({
+        name: c.author.name,
+        text: c.text,
+        date: new Date(c.date).toLocaleString('ru-RU'),
+        likes: c.likes,
+        isLiked: false, // лайки локальные, сбрасываем при загрузке
+    }));
+};
+
+export const saveComment = async ({ name, text }) => {
+    const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, text }),
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Ошибка сервера');
+    }
 };
 
 export const toggleLike = (index) => {
