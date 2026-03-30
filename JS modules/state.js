@@ -7,7 +7,7 @@ export const getComments = () => comments.slice();
 export const loadComments = async () => {
     const res = await fetch(API_URL);
     const data = await res.json();
-    comments = data.comments.map(c => ({
+    comments = data.comments.map((c) => ({
         name: c.author.name,
         text: c.text,
         date: new Date(c.date).toLocaleString('ru-RU'),
@@ -19,7 +19,6 @@ export const loadComments = async () => {
 export const saveComment = async ({ name, text }) => {
     const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, text }),
     });
     if (!res.ok) {
