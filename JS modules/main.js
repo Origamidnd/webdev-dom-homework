@@ -13,6 +13,8 @@ initAddComment({ nameInput, textInput, button, listRoot });
 initLikeHandler({ listRoot });
 initQuoteHandler({ listRoot, textInput });
 
+listRoot.innerHTML = '<div class="loading">Загружаем комментарии...</div>';
+
 loadComments().then(() => {
     renderComments(listRoot, getComments());
 });

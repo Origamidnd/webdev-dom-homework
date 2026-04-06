@@ -1,6 +1,7 @@
 // Лайки
-import { toggleLike, getComments } from './state.js';
+import { toggleLike, setLikeLoading, getComments } from './state.js';
 import { renderComments } from './view.js';
+import { delay } from './utils.js';
 
 export function initLikeHandler({ listRoot }) {
     listRoot.addEventListener('click', (e) => {
@@ -8,7 +9,17 @@ export function initLikeHandler({ listRoot }) {
         if (!likeBtn) return;
         const i = Number(likeBtn.dataset.index);
         if (Number.isNaN(i)) return;
-        toggleLike(i);
+
+        const comments = getComments();
+        if (comments[i].isLikeLoading) return;
+
+        setLikeLoading(i, true);
         renderComments(listRoot, getComments());
+
+        delay(2000).then(() => {
+            toggleLike(i);
+            setLikeLoading(i, false);
+            renderComments(listRoot, getComments());
+        });
     });
 }

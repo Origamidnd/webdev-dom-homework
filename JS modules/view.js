@@ -15,7 +15,7 @@ export function renderComments(rootEl, comments) {
               <span class="likes-counter">${item.likes}</span>
               <button class="like-button${
                   item.isLiked ? ' -active-like' : ''
-              }" data-index="${index}"></button>
+              }${item.isLikeLoading ? ' -loading-like' : ''}" data-index="${index}"></button>
             </div>
           </div>
         </li>`,
