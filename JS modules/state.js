@@ -7,6 +7,12 @@ export const getComments = () => comments.slice();
 export function loadComments() {
     return fetch(API_URL)
         .then((res) => {
+            if (!res.ok) {
+                if (res.status >= 500) {
+                    throw new Error('Ошибка сервера');
+                }
+                throw new Error('Ошибка запроса');
+            }
             return res.json();
         })
         .then((data) => {
@@ -27,9 +33,13 @@ export function saveComment({ name, text }) {
         body: JSON.stringify({ name, text }),
     }).then((res) => {
         if (!res.ok) {
-            return res.json().then((err) => {
-                throw new Error(err.error || 'Ошибка сервера');
-            });
+            if (res.status >= 500) {
+                throw new Error('Ошибка сервера');
+            }
+            if (res.status === 400) {
+                throw new Error('Ошибка запроса');
+            }
+            throw new Error('Неизвестная ошибка');
         }
     });
 }
