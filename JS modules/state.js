@@ -1,16 +1,17 @@
-const API_URL = 'https://wedev-api.sky.pro/api/v1/origami/comments';
+const API_URL = 'https://wedev-api.sky.pro/api/v2/origami/comments';
 
 let comments = [];
+let token = null;
+let user = null;
 
 export const getComments = () => comments.slice();
+export const getUser = () => user;
 
 export function loadComments() {
     return fetch(API_URL)
         .then((res) => {
             if (!res.ok) {
-                if (res.status >= 500) {
-                    throw new Error('Ошибка сервера');
-                }
+                if (res.status >= 500) throw new Error('Ошибка сервера');
                 throw new Error('Ошибка запроса');
             }
             return res.json();
@@ -27,21 +28,35 @@ export function loadComments() {
         });
 }
 
-export function saveComment({ name, text }) {
+export function saveComment({ text }) {
     return fetch(API_URL, {
         method: 'POST',
-        body: JSON.stringify({ name, text }),
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
     }).then((res) => {
         if (!res.ok) {
-            if (res.status >= 500) {
-                throw new Error('Ошибка сервера');
-            }
-            if (res.status === 400) {
-                throw new Error('Ошибка запроса');
-            }
-            throw new Error('Неизвестная ошибка');
+            if (res.status >= 500) throw new Error('Ошибка сервера');
+            if (res.status === 400) throw new Error('Ошибка запроса');
+            throw new Error('Ошибка');
         }
     });
+}
+
+export function login({ login, password }) {
+    return fetch('https://wedev-api.sky.pro/api/v2/origami/login', {
+        method: 'POST',
+        body: JSON.stringify({ login, password }),
+    })
+        .then((res) => {
+            if (!res.ok) throw new Error('Неверные данные');
+            return res.json();
+        })
+        .then((data) => {
+            token = data.user.token;
+            user = data.user;
+        });
 }
 
 export function toggleLike(index) {

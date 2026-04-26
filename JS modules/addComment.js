@@ -1,21 +1,22 @@
+import { saveComment, loadComments, getComments } from './state.js';
+import { renderComments } from './view.js';
+
 export function initAddComment({ nameInput, textInput, button, listRoot }) {
     const handlePostClick = (retryCount = 0) => {
-        const nameValue = nameInput.value.trim();
         const textValue = textInput.value.trim();
 
-        if (nameValue.length < 3 || textValue.length < 3) {
-            alert('Имя и комментарий должны быть не короче 3 символов');
+        if (textValue.length < 3) {
+            alert('Комментарий должен быть не короче 3 символов');
             return;
         }
 
         button.disabled = true;
         button.textContent = 'Отправляем...';
 
-        saveComment({ name: nameValue, text: textValue })
+        saveComment({ text: textValue })
             .then(() => loadComments())
             .then(() => {
                 renderComments(listRoot, getComments());
-                nameInput.value = '';
                 textInput.value = '';
             })
             .catch((e) => {
