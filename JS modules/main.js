@@ -1,18 +1,62 @@
-import { getComments, loadComments } from './state.js';
+import { getComments, loadComments, login, getUser } from './state.js';
 import { renderComments } from './view.js';
 import { initAddComment } from './addComment.js';
-import { initLikeHandler } from './likeHandler.js';
-import { initQuoteHandler } from './quoteHandler.js';
+import { renderLogin } from './loginView.js';
 
-const nameInput = document.getElementById('name');
-const textInput = document.getElementById('comment');
-const button = document.getElementById('button');
 const listRoot = document.querySelector('.comments');
+const appRoot = document.querySelector('.container');
+const form = document.querySelector('.add-form');
 
-initAddComment({ nameInput, textInput, button, listRoot });
-initLikeHandler({ listRoot });
-initQuoteHandler({ listRoot, textInput });
+function renderApp() {
+    listRoot.innerHTML = '<div class="loading">Загружаем...</div>';
 
-loadComments().then(() => {
-    renderComments(listRoot, getComments());
-});
+    loadComments()
+        .then(() => {
+            renderComments(listRoot, getComments());
+
+            if (!getUser()) {
+                form.style.display = 'none';
+
+                const link = document.createElement('div');
+                link.innerHTML =
+                    '<a href="#">Чтобы добавить комментарий, авторизуйтесь</a>';
+
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderLogin(appRoot, handleLogin);
+                });
+
+                appRoot.appendChild(link);
+            } else {
+                form.style.display = 'block';
+
+                const nameInput = document.getElementById('name');
+                const textInput = document.getElementById('comment');
+                const button = document.getElementById('button');
+
+                nameInput.value = getUser().name;
+                nameInput.setAttribute('readonly', true);
+
+                initAddComment({ nameInput, textInput, button, listRoot });
+            }
+        })
+        .catch((e) => {
+            if (e.message === 'Failed to fetch') {
+                alert('Кажется, у вас сломался интернет, попробуйте позже');
+            } else {
+                alert('Сервер сломался, попробуй позже');
+            }
+        });
+}
+
+function handleLogin({ login: userLogin, password }) {
+    login({ login: userLogin, password })
+        .then(() => {
+            location.reload();
+        })
+        .catch(() => {
+            alert('Неверные данные');
+        });
+}
+
+renderApp();

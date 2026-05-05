@@ -21,3 +21,11 @@ export function sanitize(str) {
         .replaceAll('>', '&gt;')
         .trim();
 }
+
+export function delay(interval = 300) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, interval);
+    });
+}
