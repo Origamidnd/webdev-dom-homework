@@ -104,6 +104,8 @@ body {
     font-family: Helvetica;
     border-radius: 8px;
     border: none;
+    width: 100%;
+    box-sizing: border-box
 }
 
 .add-form-name {

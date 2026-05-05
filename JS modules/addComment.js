@@ -4,8 +4,9 @@ import { renderComments } from './view.js';
 export function initAddComment({ nameInput, textInput, button, listRoot }) {
     const handlePostClick = (retryCount = 0) => {
         const textValue = textInput.value.trim();
+        const nameValue = nameInput.value.trim();
 
-        if (textValue.length < 3) {
+        if (textValue.length < 3 || textValue.length < 3) {
             alert('Комментарий должен быть не короче 3 символов');
             return;
         }
@@ -13,7 +14,7 @@ export function initAddComment({ nameInput, textInput, button, listRoot }) {
         button.disabled = true;
         button.textContent = 'Отправляем...';
 
-        saveComment({ text: textValue })
+        saveComment({ text: textValue, name: nameValue })
             .then(() => loadComments())
             .then(() => {
                 renderComments(listRoot, getComments());

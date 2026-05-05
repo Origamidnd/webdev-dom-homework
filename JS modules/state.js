@@ -28,13 +28,13 @@ export function loadComments() {
         });
 }
 
-export function saveComment({ text }) {
+export function saveComment({ text, name }) {
     return fetch(API_URL, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, name }),
     }).then((res) => {
         if (!res.ok) {
             if (res.status >= 500) throw new Error('Ошибка сервера');
@@ -45,7 +45,7 @@ export function saveComment({ text }) {
 }
 
 export function login({ login, password }) {
-    return fetch('https://wedev-api.sky.pro/api/v2/origami/login', {
+    return fetch('https://wedev-api.sky.pro/api/user/login', {
         method: 'POST',
         body: JSON.stringify({ login, password }),
     })

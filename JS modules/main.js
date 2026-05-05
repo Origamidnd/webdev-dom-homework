@@ -40,8 +40,12 @@ function renderApp() {
                 initAddComment({ nameInput, textInput, button, listRoot });
             }
         })
-        .catch(() => {
-            alert('Ошибка загрузки');
+        .catch((e) => {
+            if (e.message === 'Failed to fetch') {
+                alert('Кажется, у вас сломался интернет, попробуйте позже');
+            } else {
+                alert('Сервер сломался, попробуй позже');
+            }
         });
 }
 
